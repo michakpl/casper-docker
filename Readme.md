@@ -17,7 +17,7 @@ Możesz wpisać `localhost` wtedy, po odpaleniu dockera strony będą dostępne 
     $ sudo echo $(docker network inspect bridge | grep Gateway | grep -o -E '[0-9\.]+') "TWOJA_NAZWA_Z_SERVER_NAME" >> /etc/hosts
     ```
 
-    **Note:** Dla **OS X** =>  [here](https://docs.docker.com/docker-for-mac/networking/) a dla **Windows** => [this](https://docs.docker.com/docker-for-windows/#/step-4-explore-the-application-and-run-examples) (4 krok).
+    **Note:** Dla **OS X** =>  [tutaj](https://docs.docker.com/docker-for-mac/networking/) a dla **Windows** => [to](https://docs.docker.com/docker-for-windows/#/step-4-explore-the-application-and-run-examples) (4 krok).
 
 
 
