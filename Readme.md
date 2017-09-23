@@ -4,7 +4,7 @@
 ## Wstępna konfiguracja
 
 1. Przed rozpoczęciem pracy nad nowym projektem przejżyj plik `.env`. Należy go dostosować do wymagań projektu.
-Jako wymóg, należy zmienić parametr `APP_NAME` z domyślnego `szkolenie` na unikatowy. Np nazwa proejktu, bez spacji, same litery.
+Jako wymóg, należy zmienić parametr `APP_NAME` z domyślnego `szkolenie` na unikatowy. Np nazwa proejktu, bez spacji, same litery. Inaczej zduplikją się nazwy kontenerów jeśli użyjesz tego startera do innego projektu.
 
 2. Domyślnie strona dostępna jest pod adresem http://szkolenie oraz https://szkolenie:81 (jeśli dodałeś https). Należy go także zmienić.
 Lokalizacja pliku to `etc/nginx/symfony.conf` - parametr `server_name`. Pamiętaj, że występuje on w tym pliku dwa razy.
@@ -14,7 +14,7 @@ Możesz wpisać `localhost` wtedy, po odpaleniu dockera strony będą dostępne 
 
     ```bash
     # UNIX only: get containers IP address and update host (replace IP according to your configuration) (on Windows, edit C:\Windows\System32\drivers\etc\hosts)
-    $ sudo echo $(docker network inspect bridge | grep Gateway | grep -o -E '[0-9\.]+') "symfony.dev" >> /etc/hosts
+    $ sudo echo $(docker network inspect bridge | grep Gateway | grep -o -E '[0-9\.]+') "TWOJA_NAZWA_Z_SERVER_NAME" >> /etc/hosts
     ```
 
     **Note:** Dla **OS X** =>  [here](https://docs.docker.com/docker-for-mac/networking/) a dla **Windows** => [this](https://docs.docker.com/docker-for-windows/#/step-4-explore-the-application-and-run-examples) (4 krok).
@@ -27,19 +27,63 @@ Możesz wpisać `localhost` wtedy, po odpaleniu dockera strony będą dostępne 
     $ docker-compose build
     $ docker-compose up
     ```
+---
 
+## Konfiguracja Nginx oraz SSL
+
+1. Wygeneruj certyfikat SSL
+
+    ```sh
+    sudo docker run --rm -v $(pwd)/etc/ssl:/certificates -e "SERVER=szkolenie" jacoelho/generate-certificate
+    ```
+Pamiętaj, aby parametr `SERVER=szkolenie` odpowiadał nazwie twojego hosta z punktu 2
+
+2. Aktualizacja Nginx
+
+    Edit nginx file `etc/nginx/default.conf` and uncomment the SSL server section :
+
+    ```sh
+    # server {
+    #     server_name localhost;
+    #
+    #     listen 443 ssl;
+    #     ...
+    # }
+    ```
+
+---
+
+## Konfiguracja Xdebug
+
+Jesli używasz innego IDE niż PHPStorem (np. Netbeans), [zapraszam tuaj](https://xdebug.org/docs/remote)
+
+1. Sprawdź swoje IP :
+
+    ```sh
+    sudo ifconfig
+    ```
+
+2. Uaktualnij plik `etc/php/php.ini` i odkomentuj/zakomentuj potrzebny fragment.
+
+3. Ustaw parameter `remote_host` na zgodny z twoim IP:
+
+    ```sh
+    xdebug.remote_host=192.168.0.1 # your IP
+    ```
+
+---
 
 ## Instalacja aplikacji
 
-5. Domyślnie, strona musi znaleźć się w katalogu `web`. Możesz to zmienić w pliku `.env`, parametr `APP_PATH`.
+1. Domyślnie, strona musi znaleźć się w katalogu `web`. Możesz to zmienić w pliku `.env`, parametr `APP_PATH`.
 
-6. Z katalogu głównego, gdzie jest docker odpal 
+2. Z katalogu głównego, gdzie jest docker odpal 
 
     ```bash
     $ git clone LINK_DO_REPO web
     ```
 
-7. Prepare Symfony app
+3. Prepare Symfony app
     1. Połącz się z konsolą za pomocą komendy:
 
         ```bash
@@ -75,7 +119,7 @@ Możesz wpisać `localhost` wtedy, po odpaleniu dockera strony będą dostępne 
         # Jeśli używasz`doctrine/doctrine-fixtures-bundle`
         $ sf3 doctrine:fixtures:load --no-interaction
         ```
-7. Gotowe ;-)
+Gotowe ;-)
 
 
 ## Przydatne polecenia
