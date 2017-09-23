@@ -1,0 +1,48 @@
+version: '3'
+services:
+    web:
+        build: ./etc/nginx
+        container_name: ${APP_NAME}_nginx
+        ports:
+            - "80:80"
+            - "81:443"
+        restart: always
+        volumes:
+            - "./etc/ssl:/etc/ssl"
+        depends_on:
+            - php
+            - database
+    php:
+        build: ./etc/php
+        container_name: ${APP_NAME}_php
+        ports:
+            - 9000:9000
+        links:
+            - database:mysqldb
+        restart: always
+        volumes:
+            - "./etc/php/php.ini:/usr/local/etc/php/conf.d/php.ini"
+            - ${APP_PATH}:/var/www/symfony
+    myadmin:
+        image: phpmyadmin/phpmyadmin
+        container_name: ${APP_NAME}_phpmyadmin
+        ports:
+            - 8081:80
+        restart: always
+        links:
+            - database:db
+        depends_on:
+            - database
+    database:
+        image: mysql
+        container_name: ${APP_NAME}_mysql
+        restart: always
+        environment:
+            MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+            MYSQL_DATABASE: ${MYSQL_DATABASE}
+            MYSQL_USER: ${MYSQL_USER}
+            MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+        ports:
+            - 3300:3306
+        volumes:
+            - "./data/db/mysql:/var/lib/mysql"
