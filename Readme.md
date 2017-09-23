@@ -83,7 +83,7 @@ Jesli używasz innego IDE niż PHPStorem (np. Netbeans), [zapraszam tuaj](https:
     $ git clone LINK_DO_REPO web
     ```
 
-3. Prepare Symfony app
+3. Przygotowanie aplikacji
     1. Połącz się z konsolą za pomocą komendy:
 
         ```bash
