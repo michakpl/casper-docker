@@ -1,6 +1,0 @@
-          ok  Starting native_osx for sync szkolenie-sync
-          ok  szkolenie-sync container still running, restarting unison in container
-     command  docker exec szkolenie-sync supervisorctl restart unison
-          ok  starting initial sync of szkolenie-sync
-     success  Sync container started
-     success  Showing unison logs from your sync container: szkolenie-sync

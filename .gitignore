@@ -3,3 +3,4 @@ data
 /etc/.DS_Store
 web
 .DS_Store
+.docker-sync
