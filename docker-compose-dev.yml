@@ -1,0 +1,9 @@
+version: '2'
+services:
+    php:
+        volumes:
+            - ${APP_NAME}-sync:/var/www/html:nocopy
+
+volumes:
+  ${APP_NAME}-sync:
+    external: true

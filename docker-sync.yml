@@ -1,0 +1,22 @@
+version: "2"
+
+options:
+  verbose: true
+syncs:
+  firmprospects-sync:
+    src: ${APP_PATH}
+    sync_excludes_type: 'Path'
+    sync_strategy: 'native_osx' # use 'native_osx' for macos,'unison' for windows, 'native_linux' for linux
+    sync_excludes:
+      # laravel
+      - 'storage'
+      - 'bootstrap/cache'
+      # symfony 2
+      - 'app/logs'
+      - 'app/cache'
+      # symfony 3
+      - 'var/cache'
+      - 'var/logs'
+      - 'var/sessions'
+      # phpstorm
+      - '.idea'
