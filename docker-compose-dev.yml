@@ -1,9 +1,9 @@
-version: '2'
+version: '3'
 services:
     php:
         volumes:
-            - ${APP_NAME}-sync:/var/www/html:nocopy
+            - szkolenie-sync:/var/www/html:nocopy
 
 volumes:
-  ${APP_NAME}-sync:
+  szkolenie-sync:
     external: true
