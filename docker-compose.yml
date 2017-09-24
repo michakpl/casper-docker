@@ -22,7 +22,7 @@ services:
         restart: always
         volumes:
             - "./etc/php/php.ini:/usr/local/etc/php/conf.d/php.ini"
-            - ${APP_PATH}:/var/www/symfony
+            - ${APP_PATH}:/var/www/html
     myadmin:
         image: phpmyadmin/phpmyadmin
         container_name: ${APP_NAME}_phpmyadmin
