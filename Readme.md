@@ -1,13 +1,24 @@
-# Docker Symfony Starter (PHP7-FPM - NGINX - MySQL - PHPMyAdmin)
+# Frameworks Docker Starter (PHP7-FPM - NGINX - MySQL - PHPMyAdmin)
 
 
 ## Wstępna konfiguracja
 
-1. Przed rozpoczęciem pracy nad nowym projektem przejżyj plik `.env`. Należy go dostosować do wymagań projektu.
-Jako wymóg, należy zmienić parametr `APP_NAME` z domyślnego `szkolenie` na unikatowy. Np nazwa proejktu, bez spacji, same litery. Inaczej zduplikją się nazwy kontenerów jeśli użyjesz tego startera do innego projektu.
+1. Przed rozpoczęciem pracy nad nowym projektem wykonaj poniższe czynności:
 
+    1. przejżyj plik `.env`. Należy go dostosować do wymagań projektu.
+        Jako wymóg, należy zmienić parametr `APP_NAME` z domyślnego `szkolenie` na unikatowy. Np nazwa proejktu, bez spacji, same litery. Inaczej zduplikją się nazwy kontenerów jeśli użyjesz tego startera do innego projektu.
+
+    2. W zależności od używanego frameworka odpal odpowiednią komendę:
+    
+        ```bash
+    # Symfony
+    $ cp etc/nginx/symfony.conf etc/nginx/application.conf
+    # Laravel
+    $ cp etc/nginx/laravel.conf etc/nginx/application.conf
+    ```
+    
 2. Domyślnie strona dostępna jest pod adresem http://szkolenie oraz https://szkolenie:81 (jeśli dodałeś https). Należy go także zmienić.
-Lokalizacja pliku to `etc/nginx/symfony.conf` - parametr `server_name`. Pamiętaj, że występuje on w tym pliku dwa razy.
+Lokalizacja pliku to `etc/nginx/application.conf` - parametr `server_name`. Pamiętaj, że występuje on w tym pliku dwa razy.
 Możesz wpisać `localhost` wtedy, po odpaleniu dockera strony będą dostępne pod adresem http://localhost. Możesz wtedy pominąć następny krok.
 
 3. Uaktualnij plik hosts (dodaj wpisany wcześniej adres)
@@ -40,7 +51,7 @@ Pamiętaj, aby parametr `SERVER=szkolenie` odpowiadał nazwie twojego hosta z pu
 
 2. Aktualizacja Nginx
 
-    Edit nginx file `etc/nginx/default.conf` and uncomment the SSL server section :
+    W pliku `etc/nginx/application.conf` odkomentuj część odpowiadającą za ssl:
 
     ```sh
     # server {
@@ -83,14 +94,15 @@ Jesli używasz innego IDE niż PHPStorem (np. Netbeans), [zapraszam tuaj](https:
     $ git clone LINK_DO_REPO web
     ```
 
-3. Przygotowanie aplikacji
-    1. Połącz się z konsolą za pomocą komendy:
+## Przygotowanie aplikacji (Symfony)
+
+1. Połącz się z konsolą za pomocą komendy:
 
         ```bash
         $ docker-compose exec php bash
         ```
 
-    2. Popraw app/config/parameters.yml
+2. Popraw app/config/parameters.yml
 
         ```yml
         # path/to/your/symfony-project/app/config/parameters.yml
@@ -98,13 +110,13 @@ Jesli używasz innego IDE niż PHPStorem (np. Netbeans), [zapraszam tuaj](https:
             database_host: database
         ```
 
-    3. Nadaj odpowiednie uprawnienia do katalogów:
+3. Nadaj odpowiednie uprawnienia do katalogów:
 
         ```bash
         $ chmod 077 var/logs* var/cache* var/sessions*
         ```
 
-    3. Zainstaluj zależności:
+3. Zainstaluj zależności:
 
         ```bash
         $ composer install
@@ -119,6 +131,41 @@ Jesli używasz innego IDE niż PHPStorem (np. Netbeans), [zapraszam tuaj](https:
         # Jeśli używasz`doctrine/doctrine-fixtures-bundle`
         $ sf3 doctrine:fixtures:load --no-interaction
         ```
+
+### Przygotowanie aplikacji (Laravel)
+
+1. Połącz się z konsolą za pomocą komendy:
+
+         ```bash
+        $ docker-compose exec php bash
+        ```
+
+2. Nadaj odpowiednie uprawnienia do katalogów:
+
+        ```bash
+        $ chmod -R 777 storage* bootstrap/cache*
+        ```
+
+3. Zainstaluj zależności:
+
+        ```bash
+        $ composer install
+        # stwórz plik `.env`
+        $ cp .env.example .env
+        ```
+
+4. Popraw .env
+
+        ```bash
+        # path/to/your/.env
+        DB_CONNECTION=mysql
+        DB_HOST=database
+        DB_PORT=3306
+        DB_DATABASE=szkolenie
+        DB_USERNAME=szkolenie
+        DB_PASSWORD=szkolenie
+        ```
+
 Gotowe ;-)
 
 
@@ -131,14 +178,10 @@ $ docker-compose exec php bash
 # Composer
 $ docker-compose exec php composer install
 
-# Polecenia dla Symfony (Tip: Z automatu jest ustawiony alias dla sf2/sf3)
-$ docker-compose exec php php /var/www/symfony/app/console cache:clear # Symfony2
-$ docker-compose exec php php /var/www/symfony/bin/console cache:clear # Symfony3
-
 # Przykładowe użycie aliasów
 $ docker-compose exec php bash
 $ sf cache:clear
-$ sf3 c:c --no-warmup
+$ sf3 c:c --no-warmup # aby uniknąć problemów z uprawnieniami, zawsze czyść cache z flagą `--no-warmup`
 
 # Sprawdzanie adresu IP (dla przykładu szkolenie_nginx)
 $ docker inspect $(docker ps -f name=szkolenie_web -q) | grep IPAddress
@@ -146,9 +189,15 @@ $ docker inspect $(docker ps -f name=szkolenie_web -q) | grep IPAddress
 # MySQL
 $ docker-compose exec db mysql -uroot -p"root"
 
+# Czyszczenie cache (Tip: Z automatu jest ustawiony alias dla sf2/sf3)
+$ docker-compose exec php php /var/www/symfony/app/console cache:clear # Symfony2
+$ docker-compose exec php php /var/www/symfony/bin/console cache:clear # Symfony3
+$ docker-compose exec php php artisan cache:clear # Laravel
+
 # Uprawnienia do cache i logów:
 $ chmod -R 777 app/cache* app/logs* # Symfony2
 $ chmod -R 777 var/cache* var/logs* var/sessions* # Symfony3
+$ chmod -R 777 storage* bootstrap/cache* # Laravel
 
 # Check CPU consumption
 $ docker stats $(docker inspect -f "{{ .Name }}" $(docker ps -q))
