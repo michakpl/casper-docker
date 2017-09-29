@@ -9,8 +9,8 @@ services:
         restart: always
         volumes:
             - "./etc/nginx/nginx.conf:/etc/nginx/nginx.conf"
-            - "./etc/nginx/${APP_TYPE}.conf:/etc/nginx/sites-available/application.conf"
-            - "./etc/nginx/${APP_TYPE}.conf:/etc/nginx/sites-enabled/application"
+            - "./etc/nginx/app_${APP_TYPE}.conf:/etc/nginx/sites-available/application.conf"
+            - "./etc/nginx/app_${APP_TYPE}.conf:/etc/nginx/sites-enabled/application"
             - "./etc/ssl:/etc/ssl"
         depends_on:
             - php
