@@ -2,5 +2,6 @@ data
 /etc/ssl
 /etc/.DS_Store
 web
+api
 .DS_Store
 .docker-sync

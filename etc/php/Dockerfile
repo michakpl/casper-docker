@@ -47,4 +47,4 @@ RUN echo 'alias sf="php app/console"' >> ~/.bashrc
 RUN echo 'alias sf3="php bin/console"' >> ~/.bashrc
 RUN echo 'alias lv="php artisan"' >> ~/.bashrc
 
-WORKDIR /var/www/html
+WORKDIR /var/www/api

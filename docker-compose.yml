@@ -4,7 +4,7 @@ services:
         build: ./etc/nginx
         container_name: ${APP_NAME}_nginx
         ports:
-            - "80:80"
+            - "8080:80"
             - "81:443"
         restart: always
         volumes:
@@ -12,6 +12,7 @@ services:
             - "./etc/nginx/app_${APP_TYPE}.conf:/etc/nginx/sites-available/application.conf"
             - "./etc/nginx/app_${APP_TYPE}.conf:/etc/nginx/sites-enabled/application"
             - "./etc/ssl:/etc/ssl"
+            - ${APP_PATH}:/var/www/html
         depends_on:
             - php
             - database
@@ -25,17 +26,7 @@ services:
         restart: always
         volumes:
             - "./etc/php/php.ini:/usr/local/etc/php/conf.d/php.ini"
-            - ${APP_PATH}:/var/www/html
-    myadmin:
-        image: phpmyadmin/phpmyadmin
-        container_name: ${APP_NAME}_phpmyadmin
-        ports:
-            - 8081:80
-        restart: always
-        links:
-            - database:db
-        depends_on:
-            - database
+            - ${API_PATH}:/var/www/api
     database:
         image: mysql
         container_name: ${APP_NAME}_mysql
