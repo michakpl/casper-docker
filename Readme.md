@@ -1,1 +1,5 @@
-# Całą dokumentację znajdziesz na [Wiki](https://polcode.githost.io/lmalicki/sf-docker-starter/wikis/Homepage)
+# Docker configuration for Casper project
+
+https://github.com/michakpl/casper-laravel-api
+
+https://github.com/michakpl/casper-vue
